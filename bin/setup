@@ -2,6 +2,19 @@
 
 set -e
 
+if [ -n "${CODESPACES+set}" ]; then
+	if ! rvm list | grep "$(cat .ruby-version)" > /dev/null; then
+		rvm install "$(cat .ruby-version)"
+	fi
+
+	# shellcheck source=/dev/null
+	. ~/nvm/nvm.sh
+	if ! nvm list | grep "$(cat .node-version)" > /dev/null; then
+		nvm install "$(cat .node-version)"
+		nvm use "$(cat .node-version)"
+	fi
+fi
+
 gem install bundler --conservative
 bundle check || bundle install
 yarn --frozen-lockfile
